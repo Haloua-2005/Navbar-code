@@ -1,0 +1,202 @@
+/*
+1- You must install an extension "Live Sass Compiler",
+2- on bottom of VS Code screen, click on "Watch sass", it will compile and make a CSS file
+3- Link your CSS file to all html file and don't edit anything from the CSS file
+4- If you need to modify any code , go to the Scss file
+*/
+
+//Advice: Make every Section in a file, for exemple: Menu in '_menu.scss', imports, variables and Window configuration in '_config.scss', Responsivity in '_responsive.scss'. Then link all of them in the main file by doing "@import './menu' "
+
+//imports
+@import url("https://fonts.googleapis.com/css2?family=Sedgwick+Ave&display=swap");
+
+//Variables
+$black: #000;
+$white: #fff;
+$primary: #d7e0b1;
+$secondary: #d5f7b7;
+
+$fontR: "roboto", sans-serif;
+$fontS: "Sedgwick Ave", sans-serif;
+
+$navColor: rgba(0, 0, 0, 0.95);
+
+//Window Configuration
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: sans-serif;
+}
+
+//Functions , Mixin ...
+@mixin transition-ease {
+  transition: all 0.35s ease-in-out;
+}
+
+@mixin media-md {
+  @media screen and (min-width: 768px) {
+    @content;
+  }
+}
+@mixin media-lg {
+  @media screen and (min-width: 1024px) {
+    @content;
+  }
+}
+@mixin media-xl {
+  @media screen and (min-width: 1600px) {
+    @content;
+  }
+}
+
+/*Navigation*/
+
+//Burger
+.menu-btn {
+  z-index: 3;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  height: 20px;
+  width: 28px;
+  cursor: pointer;
+  @include transition-ease;
+
+  #{&}__burger {
+    position: absolute;
+    right: 0;
+    top: 0.5rem;
+    width: 28px;
+    height: 3px;
+    background: $black;
+    @include transition-ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 28px;
+      height: 3px;
+      background: $black;
+      @include transition-ease;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      width: 20px;
+      height: 3px;
+      background: $black;
+      @include transition-ease;
+    }
+    &.open {
+      transform: rotate(720deg);
+      background: transparent;
+      &::before {
+        transform: rotate(45deg) translate(5px, 8px);
+        background: $white;
+      }
+      &::after {
+        width: 28px;
+        transform: rotate(-45deg) translate(3px, -7px);
+        background: $white;
+      }
+    }
+  }
+}
+
+//Nav
+.nav {
+  visibility: hidden;
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  opacity: 0.98;
+  &.open {
+    visibility: visible;
+    z-index: 2;
+  }
+  & > ul > li > a {
+    &.active,
+    &:hover {
+      color: $secondary;
+    }
+  }
+}
+.menu-nav {
+  background: $navColor;
+  height: 100vh;
+  overflow: hidden;
+  list-style-type: none;
+  padding-right: 1rem;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  @include transition-ease;
+  transform: translateY(-100%);
+  &.open {
+    transform: translateY(0);
+  }
+  #{&}__item {
+    transform: translateX(100vw);
+    @include transition-ease;
+    &.open {
+      transform: translateX(0);
+    }
+  }
+  #{&}__link {
+    font-family: "Sedgwick Ave", "Roboto", sans-serif;
+    display: inline-block;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    padding: 2rem 0;
+    font-weight: 400;
+    text-decoration: none;
+    color: $white;
+    @include transition-ease;
+  }
+}
+@for $i from 1 through 4 {
+  .menu-nav__item:nth-child(#{$i}) {
+    transition-delay: ($i * 0.1s) + 0.15s;
+  }
+}
+
+/*Responsivity*/
+@include media-md {
+  .menu-btn {
+    visibility: hidden;
+  }
+
+  .nav {
+    visibility: visible;
+    background-color: $black;
+
+    .menu-nav {
+      display: block;
+      transform: translateY(0);
+      height: 100%;
+      background: transparent;
+      text-align: right;
+
+      &__item {
+        color: $white;
+        display: inline;
+        padding-right: 2em;
+      }
+
+      &__link {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
